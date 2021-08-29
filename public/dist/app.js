@@ -1,6 +1,9 @@
 let app = function () {
     let web3;
     let from;
+    let abi;
+    let poolData;
+    let divisor = 1000000000000000000;
 
     let connectButton = document.getElementById('connect');
     let walletContent = document.getElementById('wallet');
@@ -34,16 +37,24 @@ let app = function () {
     }
 
     let loadPool = async function () {
+        let poolDataContent = document.getElementById('poolData');
+        let poolId = document.getElementById('poolId').value;
         let contractAddress = document.getElementById('masterChefAddress').value;
-        let abi = await fetchAbi(contractAddress);
+
+        abi = abi ?? await fetchAbi(contractAddress);
 
         let contract = await new web3.eth.Contract(abi, contractAddress);
 
-        console.log(await contract.methods.poolLength().call());
+        poolData = await contract.methods.userInfo(poolId, from).call();
+
+        poolDataContent.innerText =
+            'Deposited: ' + poolData.amount / divisor +
+            ' Rewards: ' + poolData.rewardDebt / divisor;
     }
 
     let fetchAbi = async function (contractAddress) {
-        let response = await fetch('https://api.polygonscan.com/api?module=contract&action=getabi&address=' + contractAddress);
+        let response = await fetch('https://api.polygonscan.com/api?module=contract&action=getabi&address='
+            + contractAddress);
         let json = await response.json();
 
         return JSON.parse(json.result);
