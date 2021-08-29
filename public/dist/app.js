@@ -88,8 +88,9 @@ let app = function () {
         token = await new web3.eth.Contract(abi, pool.info.lpToken);
 
         let balance = await token.methods.balanceOf(from).call();
+        let symbol = await token.methods.symbol().call();
 
-        let amount = window.prompt('Amount?', balance / divisor);
+        let amount = window.prompt(symbol + ' amount?', balance / divisor);
 
         if (amount != null && amount != '') {
             let response = await contract.methods.deposit(poolId, BigInt(amount * divisor), zeroAddress).send({ from });
