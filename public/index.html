@@ -21,12 +21,21 @@
 
     <div id="content" style="display: initial;">
         <h3>Pool</h3>
-        <input id="masterChefAddress" type="text" placeholder="MasterChef contract address" style="width: 50%;">
+        <select id="masterchefs">
+            <option value="0x7622f1be52678992009fc925a1af46560155e098">LittleFarmer</option>
+        </select>
         <input id="poolId" type="text" placeholder="Pool ID">
         <button id="loadPool">Load</button>
 
-        <div>
-            <span id="poolData"></span>
+        <div id="poolInfo" style="display: none;">
+            <div>
+                <span id="poolData"></span>
+                <button id="getRewards">Get rewards</button>
+            </div>
+
+            <div>
+                <button id="deposit">Deposit</button>
+            </div>
         </div>
     </div>
 </body>

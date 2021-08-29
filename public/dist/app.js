@@ -1,9 +1,13 @@
+let web3;
+
 let app = function () {
-    let web3;
     let from;
     let abi;
-    let poolData;
+    let contract;
+    let token;
+    let pool;
     let divisor = 1000000000000000000;
+    let zeroAddress = '0x0000000000000000000000000000000000000000';
 
     let connectButton = document.getElementById('connect');
     let walletContent = document.getElementById('wallet');
@@ -37,19 +41,29 @@ let app = function () {
     }
 
     let loadPool = async function () {
+        let poolInfo = document.getElementById('poolInfo');
         let poolDataContent = document.getElementById('poolData');
+        let getRewardsButton = document.getElementById('getRewards');
+        let depositButton = document.getElementById('deposit');
+
         let poolId = document.getElementById('poolId').value;
-        let contractAddress = document.getElementById('masterChefAddress').value;
+        let contractAddress = document.getElementById('masterchefs').value;
 
         abi = abi ?? await fetchAbi(contractAddress);
 
-        let contract = await new web3.eth.Contract(abi, contractAddress);
+        contract = await new web3.eth.Contract(abi, contractAddress);
 
-        poolData = await contract.methods.userInfo(poolId, from).call();
+        pool = await contract.methods.userInfo(poolId, from).call();
+        pool.info = await contract.methods.poolInfo(poolId).call();
 
         poolDataContent.innerText =
-            'Deposited: ' + poolData.amount / divisor +
-            ' Rewards: ' + poolData.rewardDebt / divisor;
+            'Deposited: ' + pool.amount / divisor +
+            ' Rewards: ' + pool.rewardDebt / divisor;
+
+        getRewardsButton.onclick = getRewards;
+        depositButton.onclick = deposit;
+
+        poolInfo.style.display = 'initial';
     }
 
     let fetchAbi = async function (contractAddress) {
@@ -58,6 +72,30 @@ let app = function () {
         let json = await response.json();
 
         return JSON.parse(json.result);
+    }
+
+    let getRewards = async function () {
+        let poolId = document.getElementById('poolId').value;
+        let response = await contract.methods.deposit(poolId, 0, zeroAddress).send({ from });
+
+        return response;
+    }
+
+    let deposit = async function () {
+        let poolId = document.getElementById('poolId').value;
+
+        let abi = await fetchAbi(pool.info.lpToken);
+        token = await new web3.eth.Contract(abi, pool.info.lpToken);
+
+        let balance = await token.methods.balanceOf(from).call();
+
+        let amount = window.prompt('Amount?', balance / divisor);
+
+        if (amount != null && amount != '') {
+            let response = await contract.methods.deposit(poolId, BigInt(amount * divisor), zeroAddress).send({ from });
+
+            return response;
+        }
     }
 
     connectButton.onclick = connect;
