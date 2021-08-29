@@ -6,10 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>plofchain</title>
+
+    <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+    <script src="dist/app.js"></script>
 </head>
 
 <body>
+    <h1>plofchain</h1>
 
+    <div>
+        <button id='connect'>Connect to wallet</button>
+        <span id="wallet"></span>
+    </div>
+
+    <div id="content" style="display: initial;">
+        <h3>Pool</h3>
+        <input id="masterChefAddress" type="text" placeholder="MasterChef contract address" style="width: 50%;">
+        <input id="poolId" type="text" placeholder="Pool ID">
+        <button id="loadPool">Load</button>
+    </div>
 </body>
 
 </html>
