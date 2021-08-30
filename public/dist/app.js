@@ -101,8 +101,9 @@ let app = function () {
 
         let balance = await token.methods.balanceOf(from).call();
         let symbol = await token.methods.symbol().call();
+        let decimals = await token.methods.decimals().call();
 
-        let amount = window.prompt(symbol + ' amount?', web3.utils.fromWei(balance));
+        let amount = window.prompt(symbol + ' amount?', balance / Math.pow(10, decimals));
 
         if (amount != null && amount != '') {
             let response = await contract.methods.deposit(poolId, web3.utils.toWei(amount), zeroAddress).send({ from });
@@ -110,6 +111,8 @@ let app = function () {
             return response;
         }
     }
+
+
 
     connectButton.onclick = connect;
     loadPoolButton.onclick = loadPool;
