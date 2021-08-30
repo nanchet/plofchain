@@ -1,4 +1,5 @@
 let web3;
+let polygonScanApiKey = 'U1IPRFI5GKT4J9P79V7KJCPSXCW1X7RI39';
 
 let app = function () {
     let from;
@@ -79,8 +80,10 @@ let app = function () {
     }
 
     let fetchAbi = async function (contractAddress) {
-        let response = await fetch('https://api.polygonscan.com/api?module=contract&action=getabi&address='
-            + contractAddress);
+        let response = await fetch('https://api.polygonscan.com/api?module=contract&action=getabi'
+            + '&address=' + contractAddress
+            + '&apiKey=' + polygonScanApiKey
+        );
         let json = await response.json();
 
         return JSON.parse(json.result);
